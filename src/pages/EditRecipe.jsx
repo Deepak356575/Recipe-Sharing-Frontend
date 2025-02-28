@@ -2,16 +2,12 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-// Define API base URL
-const API_URL = "https://recipe-sharing-iw23.onrender.com/api/recipes/";
-
 export default function EditRecipe() {
     const [recipeData, setRecipeData] = useState({
         title: '',
         ingredients: '',
         instructions: '',
         time: '',
-        file: null, // Ensure file is handled properly
     });
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
@@ -20,18 +16,17 @@ export default function EditRecipe() {
     useEffect(() => {
         const getData = async () => {
             try {
-                const response = await axios.get(`${API_URL}${id}`);
-                const res = response.data;
+                const response = await axios.get(`https://recipe-sharing-backend-4ujn.onrender.com/recipe/${id}`);
+                let res = response.data;
                 setRecipeData({
-                    title: res.title || '',
-                    ingredients: res.ingredients ? res.ingredients.join(', ') : '',
-                    instructions: res.instructions || '',
-                    time: res.time || '',
-                    file: null, // Reset file input
+                    title: res.title,
+                    ingredients: res.ingredients.join(', '),
+                    instructions: res.instructions,
+                    time: res.time,
                 });
                 setLoading(false);
             } catch (error) {
-                console.error("Error fetching recipe data:", error);
+                console.error("Error fetching recipe data", error);
                 setLoading(false);
             }
         };
@@ -39,27 +34,26 @@ export default function EditRecipe() {
     }, [id]);
 
     const onHandleChange = (e) => {
-        const { name, value, files } = e.target;
-        setRecipeData((prev) => ({
-            ...prev,
-            [name]: name === "file" ? files[0] : value, // Handle file separately
-        }));
+        let val = e.target.name === "ingredients"
+            ? e.target.value
+            : e.target.name === "file"
+                ? e.target.files[0]
+                : e.target.value;
+
+        setRecipeData((prev) => ({ ...prev, [e.target.name]: val }));
     };
 
     const onHandleSubmit = async (e) => {
         e.preventDefault();
+        console.log(recipeData);
 
         const formData = new FormData();
-        formData.append("title", recipeData.title);
-        formData.append("time", recipeData.time);
-        formData.append("instructions", recipeData.instructions);
-        formData.append("ingredients", JSON.stringify(recipeData.ingredients.split(',').map(i => i.trim()))); // Convert to array
-        if (recipeData.file) {
-            formData.append("file", recipeData.file);
-        }
+        Object.keys(recipeData).forEach((key) => {
+            formData.append(key, recipeData[key]);
+        });
 
         try {
-            await axios.put(`${API_URL}${id}`, formData, {
+            await axios.put(`https://recipe-sharing-backend-4ujn.onrender.com/recipe/${id}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     Authorization: 'Bearer ' + localStorage.getItem("token"),
@@ -67,7 +61,7 @@ export default function EditRecipe() {
             });
             navigate("/myRecipe");
         } catch (error) {
-            console.error("Error updating recipe:", error);
+            console.error("Error updating recipe", error);
         }
     };
 
