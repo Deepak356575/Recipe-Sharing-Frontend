@@ -3,7 +3,14 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function AddFoodRecipe() {
-    const [recipeData, setRecipeData] = useState({});
+    const [recipeData, setRecipeData] = useState({
+        title: '',
+        ingredients: '',
+        instructions: '',
+        time: '',
+        file: null
+    });
+
     const navigate = useNavigate();
 
     const onHandleChange = (e) => {
@@ -21,16 +28,23 @@ export default function AddFoodRecipe() {
         console.log(recipeData);
 
         const formData = new FormData();
-        Object.keys(recipeData).forEach((key) => {
-            formData.append(key, recipeData[key]);
-        });
+        formData.append("title", recipeData.title);
+        formData.append("time", recipeData.time);
+        formData.append("instructions", recipeData.instructions);
+        formData.append("ingredients", recipeData.ingredients.join(", ")); // Convert array to comma-separated string
+        formData.append("file", recipeData.file);
 
-        await axios.post('https://recipe-sharing-iw23.onrender.com/recipe', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-                Authorization: 'Bearer ' + localStorage.getItem('token'),
-            },
-        }).then(() => navigate('/'));
+        try {
+            await axios.post(`${API_URL}/recipe`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: 'Bearer ' + localStorage.getItem('token'),
+                },
+            });
+            navigate('/');
+        } catch (error) {
+            console.error("Error adding recipe", error);
+        }
     };
 
     return (
