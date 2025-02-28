@@ -4,14 +4,14 @@ import { FaFacebook, FaTwitter, FaInstagram, FaEnvelope, FaPhone } from 'react-i
 export default function Footer() {
   return (
     <footer className="bg-gray-900 text-white text-center py-6">
-      {/* Quick Links */}
+     
       <div className="mb-4">
         <a href="/" className="mx-3 hover:underline">Home</a>
         <a href="/myRecipe" className="mx-3 hover:underline">Recipes</a>
         <a href="/favRecipe" className="mx-3 hover:underline">Favourite</a>
       </div>
 
-      {/* Social Media Icons */}
+      
       <div className="flex justify-center space-x-4 mb-4">
         <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
           <FaFacebook className="text-xl hover:text-blue-500" />
@@ -24,13 +24,13 @@ export default function Footer() {
         </a>
       </div>
 
-      {/* Contact Information */}
+      
       <div className="text-sm">
         <p><FaEnvelope className="inline mr-2" /> Ozbourne@contact.com</p>
         <p><FaPhone className="inline mr-2" /> 9876543210</p>
       </div>
 
-      {/* Copyright */}
+      
       <p className="text-sm mt-4">&copy; {new Date().getFullYear()} Ozbourne Engineering. All rights reserved.</p>
     </footer>
   );
