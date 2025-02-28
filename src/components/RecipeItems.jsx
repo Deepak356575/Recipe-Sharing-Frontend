@@ -5,7 +5,7 @@ import { FaHeart, FaEdit } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
 import axios from 'axios';
 
-const API_URL = "https://recipe-sharing-iw23.onrender.com/api/recipes/";
+const API_URL = "https://recipe-sharing-backend-4ujn.onrender.com/api/recipes/";
 
 export default function RecipeItems() {
     const recipes = useLoaderData();
